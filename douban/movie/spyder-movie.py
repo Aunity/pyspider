@@ -5,8 +5,6 @@
 @Date   2020-05-19 23:19:45
 @Web    https://github.com/Aunity
 '''
-import os
-import sys
 
 import re
 import requests
@@ -23,6 +21,7 @@ def get_types_of_movie():
     html = etree.HTML(page_text)
     span_list = html.xpath('//*[@id="content"]/div/div[2]/div[1]/div/span')
     movie_types = []
+
     for span in span_list:
         span_text = span.xpath('./a/text()')[0]
         span_href = 'https://movie.douban.com'+span.xpath('./a/@href')[0]
@@ -30,6 +29,10 @@ def get_types_of_movie():
         type_id = match.groups(0)[0]
         movie_types.append((span_text, type_id))
     movie_types = sorted(movie_types, key=lambda x: int(x[1]))
+    typefile = "douban_movie_types.txt"
+    with open(typefile,'w', encoding='utf-8') as fw:
+        for movie_type in movie_types:
+            fw.write("%s %s\n"%(movie_type[0],movie_type[1]))
     return movie_types
 
 def get_number_of_movies(type_id, interval_id):

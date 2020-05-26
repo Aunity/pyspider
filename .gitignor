@@ -1,0 +1,4 @@
+.gitignor
+*.pyc
+__pycache__
+.idel
