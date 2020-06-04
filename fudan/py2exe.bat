@@ -1,0 +1,1 @@
+D:\anaconda3\Scripts\pyinstaller.exe -D -p D:\anaconda3\Lib\  -i bitbug_favicon.ico -w  pinganFudan-GUI.py
