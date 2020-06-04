@@ -13,6 +13,7 @@ class Ehall(object):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
     }
     session = None
+    username = None
 
     def __init__(self, config):
         self.data = {
@@ -36,10 +37,12 @@ class Ehall(object):
         html = etree.HTML(response.text)
         username = html.xpath('// *[ @ id = "auth_siderbar"] / div[2] / span / span/text()')
         if len(username) == 0:
-            print("Faild login!")
+            #print("Faild login!")
+            pass
         else:
             username = username[0].strip()
-            print("Successful login: %s" % username)
+            #print("Successful login: %s" % username)
+            self.username = username
 
 
 def main():
