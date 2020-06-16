@@ -55,11 +55,9 @@ class Music163(object):
         res = base64.b64encode(res).decode("utf-8")
         return res
 
-    def __get_encText(self):
+    def __get_encText(self, text):
         key = self.__get_random_key(16)
-        args = '{"phone":"%s","password":"%s","rememberLogin":"true","checkToken":"","csrf_token": ""}' % (
-            self.username, hashlib.md5(bytes(self.password, encoding="utf-8")).hexdigest())
-        encText = self.__AES_encrypt(args)
+        encText = self.__AES_encrypt(text)
         return self.__AES_encrypt(encText, key=key)
 
 
@@ -72,8 +70,10 @@ class Music163(object):
         return format(rs, 'x').zfill(256)
 
     def login(self):
+        args = '{"phone":"%s","password":"%s","rememberLogin":"true","checkToken":"","csrf_token": ""}' % (
+            self.username, hashlib.md5(bytes(self.password, encoding="utf-8")).hexdigest())
         data = {
-            "params": self.__get_encText(),
+            "params": self.__get_encText(args),
             "encSecKey": self.__get_encSecKey()
         }
         url = "https://music.163.com/weapi/login/cellphone"
@@ -88,12 +88,27 @@ class Music163(object):
         # with open(daliylog, 'w+', encoding='utf-8') as fw:
         #     json.dump(response.json(), fw, ensure_ascii=False, indent=4)
 
+    def checkin(self):
+        url = "https://music.163.com/weapi/point/dailyTask"
+        csrf_token = self.session.cookies.get("__csrf")
+        print(csrf_token)
+        url = "https://music.163.com/weapi/point/dailyTask?csrf_token=%s" % csrf_token
+        args = '{"type":1,"csrf_token":"%s"}' % csrf_token
+        data = {
+            "params": self.__get_encText(args),
+            "encSecKey": self.__get_encSecKey()
+        }
+        response = self.session.post(url, headers=self.headers, data=data)
+        page_json = response.text
+        print(page_json)
+
 def main():
     loginf = 'info.login'
     with open(loginf) as fr:
         config = json.load(fr)
     loginm = Music163(config)
     loginm.login()
+    loginm.checkin()
 
 if __name__ == "__main__":
     main()
