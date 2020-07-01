@@ -102,13 +102,29 @@ class Music163(object):
         page_json = response.text
         print(page_json)
 
+    def crawl_music_comments(self):
+        '''
+        依据歌曲ID爬取该歌曲的评论
+        :return:
+        '''
+        url = "https://music.163.com/weapi/v1/resource/comments/R_SO_4_1321007185"
+        args = '{"rid":"R_SO_4_1321007185","offset":"0","total":"true","limit":"20","csrf_token":""}'
+        data = {
+            "params": self.__get_encText(args),
+            "encSecKey": self.__get_encSecKey()
+        }
+        response = self.session.post(url, headers=self.headers, data=data)
+        page_json = response.json()
+        print(page_json)
+
 def main():
     loginf = 'info.login'
     with open(loginf) as fr:
         config = json.load(fr)
     loginm = Music163(config)
-    loginm.login()
-    loginm.checkin()
+    #loginm.login()
+    #loginm.checkin()
+    loginm.crawl_music_comments()
 
 if __name__ == "__main__":
     main()
